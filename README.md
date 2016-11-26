@@ -29,5 +29,3 @@ if you want to modify the code, just rebuild the gem with provided gemspec
     gem build quiver2Jekyll_plus.gemspec
     gem install ./quiver2Jekyll_plus-0.1.0.gem
 
-
-
