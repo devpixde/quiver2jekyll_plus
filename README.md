@@ -28,19 +28,19 @@ if you want to modify the code, just rebuild the gem with provided gemspec
 
 ## Quick start
 
-quiver2Jekyll_plus should now be available on your CLI
+After installation quiver2Jekyll_plus should now be available on your CLI
 
 run
 
-
-'''bash
     quiver2Jekyll_plus quiver-input-folder jekyll-output-folder selector 
-'''
+
+
+
 
 For example:
-'''bash
+
     quiver2Jekyll_plus '.' './../_posts' '*' 
-'''
+
 Selects all quiver-notes in same folder that are beginning with * in its title and creating jekyll-posts in folder ./../_posts
 
 All parameters are optional.
