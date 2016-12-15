@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = 'quiver2Jekyll_plus'
-  s.version = '0.1.0'
-  s.date = '2016-11-26'
+  s.version = '0.3.1'
+  s.date = '2016-12-15'
   s.summary = "Convert Quiver export to jekyll markdown"
   s.description = "use uiver2Jekyll_plus quiver-folder jekyll-folder to convert."
   s.authors = ["Ingo Klemm"]

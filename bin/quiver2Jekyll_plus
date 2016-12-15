@@ -23,5 +23,5 @@ else
 
   input_dir = ARGV[0] || Dir.pwd
   output_dir = ARGV[1] || Dir.pwd
-  Quiver2Jekyll_plus::Converter.new input_dir, output_dir
+  Quiver2Jekyll_plus::Converter.new input_dir, output_dir, ARGV[2] || ''
 end

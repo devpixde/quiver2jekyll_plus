@@ -2,17 +2,26 @@
 require 'date'
 require 'json'
 
+# Devpix: Ingo Klemm, info@devpix.de
+
+
 module Quiver2Jekyll_plus
-
-
 
   class Post
 
-    def initialize(content, meta, category, output_dir)
+    def initialize(content, meta, category, output_dir, selector)
       meta_json = JSON.parse(meta)
       content_json = JSON.parse(content)
       output = build meta_json, content_json, category
-      save output, File.join(output_dir, get_filename(meta_json))
+
+      if selector == ''
+        save output, File.join(output_dir, get_filename(meta_json))
+        puts "-> #{File.join(output_dir, get_filename(meta_json)).to_s}"
+      elsif /^#{Regexp.quote(selector)}/ =~ get_title(meta_json)
+        meta_json['title'] = get_title(meta_json).gsub(/^#{Regexp.quote(selector)}-?/, '')
+        save output, File.join(output_dir, get_filename(meta_json))
+        puts "-> #{File.join(output_dir, get_filename(meta_json)).to_s}"
+      end
     end
 
     def build meta_json, content_json, category
@@ -53,8 +62,12 @@ module Quiver2Jekyll_plus
       output
     end
 
+    def get_title meta_json
+      return meta_json["title"].gsub(" ", "-").downcase
+    end
+
     def get_filename meta_json
-      title = meta_json["title"].gsub(" ", "-").downcase
+      title = get_title meta_json
       updated_at_date = DateTime.strptime(meta_json["updated_at"].to_s, "%s")
       day = "%02d" % updated_at_date.day
       month = "%02d" % updated_at_date.month
@@ -67,12 +80,21 @@ module Quiver2Jekyll_plus
 
   class Converter
 
-    def initialize(input, output)
-      @output = output
-      find_posts input
+    def initialize(input, output, selector)
+      # remove ", ', and , from arguments
+      input_folder = input.gsub(/["',]/, '')
+      @output = output.gsub(/["',]/, '')
+      @selector = selector || ''
+
+      if Dir.exists?(input_folder) && Dir.exists?(@output)
+        convert_posts input_folder
+      else
+        puts 'input and/or output directory missing'
+      end
+
     end
 
-    def find_posts input
+    def convert_posts input
       posts = Dir[input + '/**/*'].reject do |file|
         File.file?(file) || !file.to_s.end_with?('.qvnote')
       end
@@ -80,7 +102,7 @@ module Quiver2Jekyll_plus
         if isQvnote? folder
           content = File.read(File.join(folder, 'content.json'))
           meta = File.read(File.join(folder, 'meta.json'))
-          Quiver2Jekyll_plus::Post.new(content, meta, get_category(folder), @output)
+          Quiver2Jekyll_plus::Post.new(content, meta, get_category(folder), @output, @selector)
         end
       end
     end
@@ -101,10 +123,10 @@ module Quiver2Jekyll_plus
   end
 
 
-
 end
 
 
+# Quiver2Jekyll_plus::Converter.new(ARGV[0], ARGV[1], ARGV[2])
 
 
 
